@@ -32,7 +32,7 @@ public class GeoRouteSearch implements iConstant {
 			String authValue = "Basic " + encodedAppId.trim();
 
 			URL url = new URL(
-					"http://openapi.kt.com/maps/geocode/GetGeocodeByAddr?params="
+					"http://openapi.kt.com/maps/etc/RouteSearch?params="
 							+ getParams());
 			// URL 연결
 			URLConnection conn = url.openConnection();
@@ -48,9 +48,11 @@ public class GeoRouteSearch implements iConstant {
 			br = new BufferedReader(new InputStreamReader(is));
 			int i = 0;
 			// 데이터 가져오기.
+			StringBuilder sb = new StringBuilder();
 			while ((data = br.readLine()) != null) {
 				// data는 Result 데이터 이다.
-
+				Log.i("naviApp", "data=" + data);
+				sb.append(data);
 				String[] datas = data.split(",");
 				String[] datas2 = datas[4].split(":");
 				// payload는 검색 결과 데이터이이고
@@ -61,6 +63,7 @@ public class GeoRouteSearch implements iConstant {
 				return payload;
 
 			}
+		//	return sb.toString();
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.i("naviApp", "error");
@@ -71,17 +74,17 @@ public class GeoRouteSearch implements iConstant {
 
 	public String getParams() throws UnsupportedEncodingException, JSONException {
 		// 주소 파라미터
-		String addr = "서울특별시 강남구 삼성동 168-1";
-		// 주소를 UTF-8로 URLEncoding 해 준다.
-		String utf8Addr = java.net.URLEncoder.encode(addr, "utf-8");
-		String timestamp = "20120413092033765";
-		String addrcdtype = "0";
 		// 입력 파라미터들을 Json 형태로 만들어 준다.
 		// JSON 라이브러리는 인터넷이서 구할 수 있다.
 		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("timestamp", timestamp);
-		jsonObj.put("addrcdtype", addrcdtype);
-		jsonObj.put("addr", utf8Addr);
+		jsonObj.put("SX", params.SX);
+		jsonObj.put("SY", params.SY);
+		jsonObj.put("EX", params.EX);
+		jsonObj.put("EY", params.EY);
+		jsonObj.put("RPTYPE", params.RPTYPE);
+		jsonObj.put("COORDTYPE", params.COORDTYPE);
+		jsonObj.put("PRIORITY", params.PRIORITY);
+		jsonObj.put("timestamp", params.timestamp);
 		String params = jsonObj.toString();
 		System.out.println(params);
 		// 입력 파라미터가 모두 들어간 파라미터를 UTF-8 URLEncoding 을 해준다.
