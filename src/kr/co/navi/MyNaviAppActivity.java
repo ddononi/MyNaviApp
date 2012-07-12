@@ -3,6 +3,10 @@ package kr.co.navi;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import kr.co.navi.utils.CoordinateTransformation;
 import kr.co.navi.utils.GPoint;
 import android.app.Activity;
@@ -45,7 +49,30 @@ public class MyNaviAppActivity extends Activity {
 		parmas.timestamp = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
 		GeoRouteSearch t = new GeoRouteSearch(parmas);
 		TextView logTv = (TextView)findViewById(R.id.log);
-		logTv.setText("payload : " + t.execute());
+		//logTv.setText("payload : " + t.execute());
+		String jsonText =  t.execute();
+		parseJson(jsonText);
+	}
+
+	private void parseJson(String json) {
+		try {
+			JSONArray links = (new JSONObject(json)).getJSONArray("link");
+			for(int i = 0; i < links.length(); i++){
+				JSONObject arr = links.getJSONObject(i);
+				JSONArray vertex = arr.getJSONArray("vertex");
+				for(int j = 0; j < links.length(); j++){
+					vertex.getJSONObject(j);
+					double y = vertex.getDouble(0);
+					double x = vertex.getDouble(1);		
+					Log.i("navi", "y : " + y);
+					Log.i("navi", "x : " + x);
+				}
+			}
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
