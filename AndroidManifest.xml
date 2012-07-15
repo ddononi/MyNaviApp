@@ -18,7 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    	<uses-library android:name="com.google.android.maps" android:required="true"/>        
+    	<uses-library android:name="com.google.android.maps" android:required="true"/>
+    	<activity android:name="NaviSearchActivity" android:theme="@android:style/Theme.Dialog" android:label="경로탐색"></activity>        
     </application>
 
 </manifest>

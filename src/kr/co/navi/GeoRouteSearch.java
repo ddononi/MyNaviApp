@@ -31,9 +31,7 @@ public class GeoRouteSearch implements iConstant {
 			// 마지막에 공백이 들어 문제가 발생 할 수 있어 trim() 처리 한다.
 			String authValue = "Basic " + encodedAppId.trim();
 
-			URL url = new URL(
-					"http://openapi.kt.com/maps/etc/RouteSearch?params="
-							+ getParams());
+			URL url = new URL(	SEARCH_URL + getParams());
 			// URL 연결
 			URLConnection conn = url.openConnection();
 			conn.setDoOutput(true);
@@ -50,8 +48,10 @@ public class GeoRouteSearch implements iConstant {
 			// 데이터 가져오기.
 			StringBuilder sb = new StringBuilder();
 			while ((data = br.readLine()) != null) {
+				sb.append(data);
+			}
 				// data는 Result 데이터 이다.
-				Log.i("naviApp", "data=" + data);
+			 	data = sb.toString();
 				sb.append(data);
 				String[] datas = data.split(",");
 				String[] datas2 = datas[4].split(":");
@@ -61,17 +61,21 @@ public class GeoRouteSearch implements iConstant {
 						"utf-8");
 				Log.i("naviApp", "Result Data=" + payload);
 				return payload;
-
-			}
-		//	return sb.toString();
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.i("naviApp", "error");
+			return null;
 		}
 
-		return null;
 	}
 
+	/**
+	 * 파라미터 설정
+	 * @return
+	 * 	인코딩된 파라미터
+	 * @throws UnsupportedEncodingException
+	 * @throws JSONException
+	 */
 	public String getParams() throws UnsupportedEncodingException, JSONException {
 		// 주소 파라미터
 		// 입력 파라미터들을 Json 형태로 만들어 준다.
@@ -195,5 +199,30 @@ public class GeoRouteSearch implements iConstant {
 		 * “yyyyMMddHHmmssSSS” 포맷의 요청 시간
 		 */
 		String timestamp;
+		
+		// 자동차 경로탐색 우선 순위 
+		/**
+		 * 최단 거리 우선
+		 */
+		public static final String PRIORITY_SHOTCUT = "0";
+		/**
+		 * 고속도로 우선
+		 */
+		public static final String PRIORITY_HIGHWAY = "1";
+		/**
+		 * 무료 도로 우선
+		 */
+		public static final String PRIORITY_FREEWAY = "2";		
+		/**
+		 * 최적 경로
+		 */
+		public static final String PRIORITY_OPTIMUM = "3";				
+
+		/**
+		 *	실시간 도로 우선
+		 */
+		public static final String PRIORITY_REALTIME = "5";					
+		
+		
 	}
 }
