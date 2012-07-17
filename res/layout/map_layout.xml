@@ -4,79 +4,57 @@
     android:layout_height="fill_parent" >
 
     <com.google.android.maps.MapView
-        android:layout_alignParentTop="true"
         android:id="@+id/map"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
         android:apiKey="0unKu1DFEwEr3dgPyEL82KZRvEBuELFwzkiRAng"
         android:clickable="true" />
-    
+
     <LinearLayout
-        android:id="@+id/addr_searchbox"
+        android:visibility="gone"
+        android:id="@+id/navi_info_box"
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
+        android:layout_height="120dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/txt_win_bg"
         android:orientation="vertical" >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/start_place"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_margin="5dp"
             android:layout_marginLeft="10dp"
-            android:orientation="horizontal" >
-            
-            <EditText
-                android:layout_weight="1"
-                android:id="@+id/start_input"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="출발위치를 입력하세요" />
-            
+            android:textStyle="bold" />
 
-	        <ImageButton
-	            android:id="@+id/my_start_place_btn"
-	            android:layout_width="30dp"
-	            android:layout_height="wrap_content"
-	            android:scaleType="fitXY"
-	            android:src="@drawable/my_place"
-	            android:layout_weight="1" />             
-        </LinearLayout>
+        <TextView
+            android:id="@+id/end_place"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_marginLeft="10dp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="10dp"
             android:orientation="horizontal" >
 
-
-            <EditText
-	            android:layout_weight="1"                
-                android:id="@+id/end_input"
+            <TextView
+                android:id="@+id/total_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="도착 위치를 입력하세요" />
+                android:layout_margin="5dp"
+                android:layout_marginLeft="10dp" />
 
-	        <ImageButton
-	            android:id="@+id/my_end_place_btn"
-	            android:layout_width="30dp"
-	            android:layout_height="wrap_content"
-	            android:scaleType="fitXY"
-	            android:src="@drawable/my_place"
-	            android:layout_weight="1" />            
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="10dp" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/search_btn"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/search_btn"
-            android:text="출발"
-            android:textColor="#fff"
-            android:textSize="18sp"
-            android:layout_marginBottom="5dp" />
-    </LinearLayout>    
+    </LinearLayout>
 
 </RelativeLayout>

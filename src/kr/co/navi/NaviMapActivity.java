@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import kr.co.navi.data.VerTexData;
 import kr.co.navi.overlay.CustomItemizedOverlay;
 import kr.co.navi.overlay.CustomItemizedOverlay.OnOverlayItemClickListener;
@@ -27,8 +28,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -46,13 +50,21 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 	private List<Overlay> mapOverlays; // 오버레이 아이템 리스트
 	private Projection projection;
 	private VerTexData verTexData;
-
+	
+	private LinearLayout infoBox;			// 경로 정보 박스
+	private TextView startPlaceTv;			// 출발 위치
+	private TextView endPlaceTv;			// 도착 위치	
+	private TextView totalDistanceTv;		// 총 거리
+	private TextView totalTimeTv;			// 예상 시간	
+	
 	// location
 	private GeoPoint startPoint;
 	private GeoPoint endPoint;
 
 	private String startAddress;
 	private String endAddress;
+	private String totalDistance;
+	private String totalTime;	
 
 	private String priority;
 	@Override
@@ -72,6 +84,12 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 		mMapView = (MapView) findViewById(R.id.map);
 		mMapView.setBuiltInZoomControls(true); // 줌 컨트롤
 		mMapView.setTraffic(true);
+		infoBox = (LinearLayout)findViewById(R.id.navi_info_box);
+		// 상단 네비 정보 텍스트뷰 엘리먼트
+		startPlaceTv = (TextView)findViewById(R.id.start_place);
+		endPlaceTv = (TextView)findViewById(R.id.end_place);		
+		totalTimeTv = (TextView)findViewById(R.id.total_time);				
+		totalDistanceTv = (TextView)findViewById(R.id.distance);			
 
 	}
 
@@ -120,6 +138,7 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 			mMapView.setSatellite(true);
 			break;
 		case 2:
+			infoBox.setVisibility(View.GONE);
 			Intent intent = new Intent(this, NaviSearchActivity.class);
 			startActivityForResult(intent, 11);
 			break;
@@ -258,13 +277,30 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 				progress.dismiss();
 			}
 
-			if (result) {
+			if (result) {	// 정상 수신
 				parseJson(jsonText.trim());
 				mapOverlays = mMapView.getOverlays();
+				mapOverlays.clear();	// 이전 오버레이는 제거
 				projection = mMapView.getProjection();
 				mapOverlays.add(new MyOverlay());
 				
 				addPointOverlayItem();
+				
+				// 경로 정보 
+				startPlaceTv.setText("출발 : " + startAddress.replace("대한민국", " "));
+				endPlaceTv.setText("도착 : " +endAddress.replace("대한민국", " "));
+				// 예상 시간 설정
+				String hour = "";	// 60분 이상일경우 시간으로 변환처리
+				long time = Math.round( Double.valueOf(totalTime)) ;
+				if( time >  60){	// 1시간 이상이면 시간으로 변환
+					hour = String.valueOf(time / 60);
+					totalTime = hour +"시간 " + String.valueOf(time % 60) +"분";
+				}else{
+					totalTime = time + "분";
+				}
+				totalTimeTv.setText("예상시간 : 약 " +totalTime) ;
+				totalDistanceTv.setText("거리 : 약" + Math.round( Double.valueOf(totalDistance) / 1000) + "Km");
+				infoBox.setVisibility(View.VISIBLE);	// 주소정보 박스를 보여준다.
 			}
 		}
 
@@ -298,6 +334,19 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 				JSONObject RESDATA = (new JSONObject(json))
 						.getJSONObject("RESDATA");
 				JSONObject SROUTE = RESDATA.getJSONObject("SROUTE");
+				JSONObject ROUTE = SROUTE.getJSONObject("ROUTE");
+				// 예상 시간
+				totalTime =  ROUTE.getString("total_time");
+				// 거리
+				totalDistance = ROUTE.getString("total_dist");
+				
+				/*
+				ROUTE":
+				{
+				"total_time":"14.28",
+				"total_dist":"2956",
+				"rg_count":"8",				
+				*/
 				JSONObject LINKS = SROUTE.getJSONObject("LINKS");
 				JSONArray links = LINKS.getJSONArray("link");
 

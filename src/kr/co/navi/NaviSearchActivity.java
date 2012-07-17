@@ -112,6 +112,7 @@ public class NaviSearchActivity extends Activity implements iConstant {
 					public void onClick(DialogInterface dialog, int which) {
 						String[] arr = getResources().getStringArray(R.array.pirority_value);
 						priorty = arr[which];			//우선 순위 설정
+						dialog.dismiss();
 					}
 				}).setNegativeButton("취소",null).show();
 			}
