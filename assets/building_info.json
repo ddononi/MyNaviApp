@@ -1,0 +1,19 @@
+{
+ 	buildings : [
+ 		{
+ 			name : "하이요",
+ 			info : "그는 이어 장기 보유할 수 있는 기관을 대상으로 주식을 매각한 것이라며 “오버행(대규모 물량 부담) 이슈는 모두 해소된 것으로 볼 수 있다”고 덧붙였다. ",
+ 			img : "http://image.moneytoday.co.kr/indexlink_image.php?no=2008031210221912335_1.jpg&index=6", 
+ 			lat : 37.559301,
+ 			lng : 127.158036
+ 		},
+ 		{
+ 			name : "하이요",
+ 			info : "그는 이어 장기 보유할 수 있는 기관을 대상으로 주식을 매각한 것이라며 “오버행(대규모 물량 부담) 이슈는 모두 해소된 것으로 볼 수 있다”고 덧붙였다. ",
+ 			img : "http://image.moneytoday.co.kr/indexlink_image.php?no=2008031210221912335_1.jpg&index=6", 
+ 			lat : 37.550013,
+ 			lng : 127.150397	
+ 		}
+ 	
+ 	]
+ }

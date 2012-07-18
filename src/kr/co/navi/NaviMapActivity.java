@@ -1,5 +1,9 @@
 package kr.co.navi;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +21,7 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -74,6 +79,13 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 		setContentView(R.layout.map_layout);
 		getIntent();
 		initLayout();
+		
+		try {
+			parseBuildingInfoJson();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -91,14 +103,14 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 		totalTimeTv = (TextView)findViewById(R.id.total_time);				
 		totalDistanceTv = (TextView)findViewById(R.id.distance);			
 
-	}
-
-	private void addPointOverlayItem() {
 		mapOverlays = mMapView.getOverlays();
 		// first overlay
 		drawable = getResources().getDrawable(R.drawable.marker);
 		itemizedOverlay = new CustomItemizedOverlay<CustomOverlayItem>(
-				drawable, mMapView);
+				drawable, mMapView);		
+	}
+
+	private void addPointOverlayItem() {
 		CustomOverlayItem startPointOverlayItem = new CustomOverlayItem(
 				startPoint, "출발장소", startAddress,
 				"http://www.nemopan.com/files/attach/images/1122470/210/313/006/%EB%AF%B8%EC%8A%A4%EC%BD%94%EB%A6%AC%EC%95%84-%EC%9D%B4%EC%A0%95%EB%B9%88.jpg");
@@ -263,6 +275,51 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 			canvas.drawPath(path, mPaint);			
 		}
 	}
+	
+	private void parseBuildingInfoJson() throws IOException {
+		AssetManager am = getResources().getAssets();
+		InputStream is = am.open("building_info.json");
+		BufferedReader br = new BufferedReader(new InputStreamReader(is));
+		StringBuilder sb = new StringBuilder();
+		String data;
+		while( (data = br.readLine()) != null){
+			sb.append(data);
+		}
+		String json = sb.toString();
+		
+		try {
+			// json 이외 문자 제거
+
+			JSONArray jsonArray = (new JSONObject(json)).getJSONArray("buildings");
+			CustomOverlayItem overLay;
+			GeoPoint point;
+			for (int i = 0; i < jsonArray.length(); i++) { // 경로 배열
+				JSONObject obj = jsonArray.getJSONObject(i);
+					/*
+					 *  			name : "하이요",
+ 			info : "그는 이어 장기 보유할 수 있는 기관을 대상으로 주식을 매각한 것이라며 “오버행(대규모 물량 부담) 이슈는 모두 해소된 것으로 볼 수 있다”고 덧붙였다. ",
+ 			img : "https://encrypted-tbn0.google.com/images?q=tbn:ANd9GcRu052WIO1gBQC4kT6tZDIDmTwpE4MEVy7pWyF3-fckftcoI5vJJQ",
+ 			lat : 37.559301,
+ 			lng : 127.158036
+					 */
+					String name = obj.getString("name"); // y 좌표 얻기
+					String info = obj.getString("info"); 		// x 좌표 얻기
+					String img = obj.getString("img"); 		// x 좌표 얻기
+					int lat = (int)(Double.parseDouble(obj.getString("lat")) * 1E6); 		// x 좌표 얻기
+					int lng = (int)(Double.parseDouble(obj.getString("lng")) *1E6); 		// x 좌표 얻기
+					point = new GeoPoint(lat, lng);
+					overLay = new CustomOverlayItem(point, name, info, img);
+					itemizedOverlay.addOverlay(overLay);
+					mapOverlays.add(itemizedOverlay);
+
+			}
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 
 	/**
 	 * 경로 받아오기 쓰레드 처리 클래스
