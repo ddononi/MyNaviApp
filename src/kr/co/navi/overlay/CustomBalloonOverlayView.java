@@ -72,10 +72,8 @@ public class CustomBalloonOverlayView<Item extends OverlayItem> extends
 		// get remote image from network.
 		// bitmap results would normally be cached, but this is good enough for
 		// demo purpose.
-		image.setImageResource(R.drawable.icon);
+		image.setImageResource(R.drawable.noimage);
 
-		// ddononi ?òÏ†ï
-		// ???¥Î?Ïß?? ?ÑÎãàÎ©?asset?êÏÑú ?¥Î?Ïß?? Í∞?†∏???¥Î?Ïß?°ú ?§Ï†ï?¥Ï???
 		if (item.getImageURL().contains("http://") == false) {
 			Bitmap b = loadBitmapFromAsset(item.getImageURL());
 			Drawable drawable = new BitmapDrawable(b);

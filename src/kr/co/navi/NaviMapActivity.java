@@ -112,21 +112,21 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 
 	private void addPointOverlayItem() {
 		CustomOverlayItem startPointOverlayItem = new CustomOverlayItem(
-				startPoint, "출발장소", startAddress,
-				"http://www.nemopan.com/files/attach/images/1122470/210/313/006/%EB%AF%B8%EC%8A%A4%EC%BD%94%EB%A6%AC%EC%95%84-%EC%9D%B4%EC%A0%95%EB%B9%88.jpg");
+				startPoint, "출발장소", startAddress, "http://www.tjeju.kr/Helper/UC/ImgLink/noimg/NoImage356.jpg");
 		itemizedOverlay.addOverlay(startPointOverlayItem);
 
 		CustomOverlayItem endPointOverlayItem = new CustomOverlayItem(
-				endPoint, "도착장소", endAddress,
-				"http://www.nemopan.com/files/attach/images/1122470/210/313/006/%EB%AF%B8%EC%8A%A4%EC%BD%94%EB%A6%AC%EC%95%84-%EC%9D%B4%EC%A0%95%EB%B9%88.jpg");
+				endPoint, "도착장소", endAddress, "http://www.tjeju.kr/Helper/UC/ImgLink/noimg/NoImage356.jpg");
 		itemizedOverlay.addOverlay(endPointOverlayItem);
 
-		itemizedOverlay
-				.setOnItemClickListener(new OnOverlayItemClickListener() {
-					public void onClick(CustomOverlayItem item) {
-						// 오버레이 클리처리
-					}
-				});
+		itemizedOverlay.setOnItemClickListener(new OnOverlayItemClickListener() {
+
+			public void onClick(CustomOverlayItem item,
+					CustomItemizedOverlay cio) {
+				cio.hideBalloon();
+			}
+
+		});
 
 		mapOverlays.add(itemizedOverlay);
 		final MapController mc = mMapView.getController();
@@ -276,6 +276,11 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 		}
 	}
 	
+	/**
+	 * asset에 저장된 학교정보 json을 파싱하여 
+	 * 학교 정보 커스텀 오버레이 아이템으로 만들어 준다.
+	 * @throws IOException
+	 */
 	private void parseBuildingInfoJson() throws IOException {
 		AssetManager am = getResources().getAssets();
 		InputStream is = am.open("building_info.json");
@@ -295,13 +300,7 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 			GeoPoint point;
 			for (int i = 0; i < jsonArray.length(); i++) { // 경로 배열
 				JSONObject obj = jsonArray.getJSONObject(i);
-					/*
-					 *  			name : "하이요",
- 			info : "그는 이어 장기 보유할 수 있는 기관을 대상으로 주식을 매각한 것이라며 “오버행(대규모 물량 부담) 이슈는 모두 해소된 것으로 볼 수 있다”고 덧붙였다. ",
- 			img : "https://encrypted-tbn0.google.com/images?q=tbn:ANd9GcRu052WIO1gBQC4kT6tZDIDmTwpE4MEVy7pWyF3-fckftcoI5vJJQ",
- 			lat : 37.559301,
- 			lng : 127.158036
-					 */
+
 					String name = obj.getString("name"); // y 좌표 얻기
 					String info = obj.getString("info"); 		// x 좌표 얻기
 					String img = obj.getString("img"); 		// x 좌표 얻기
@@ -311,7 +310,12 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 					overLay = new CustomOverlayItem(point, name, info, img);
 					itemizedOverlay.addOverlay(overLay);
 					mapOverlays.add(itemizedOverlay);
-
+					itemizedOverlay.setOnItemClickListener(new OnOverlayItemClickListener() {
+						public void onClick(CustomOverlayItem item,
+								CustomItemizedOverlay cio) {
+							cio.hideBalloon();
+						}
+					});
 			}
 
 		} catch (JSONException e) {

@@ -52,7 +52,11 @@ public class CustomItemizedOverlay<Item extends OverlayItem> extends BalloonItem
 
 	@Override
 	protected boolean onBalloonTap(int index, CustomOverlayItem item) {
-		listener.onClick(item);
+		if(listener != null){
+			listener.onClick(item, this);
+		}else{
+			this.hideBalloon();
+		}
 		return true;
 	}
 	
@@ -67,7 +71,7 @@ public class CustomItemizedOverlay<Item extends OverlayItem> extends BalloonItem
 	}
 	
 	public interface OnOverlayItemClickListener{
-		public void onClick(CustomOverlayItem item);
+		public void onClick(CustomOverlayItem item, CustomItemizedOverlay cio);
 	}
 
 }
