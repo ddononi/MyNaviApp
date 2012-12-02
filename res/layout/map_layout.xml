@@ -35,13 +35,36 @@
             android:layout_margin="5dp"
             android:layout_marginLeft="10dp"
             android:textStyle="bold" />
-
+        
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <TextView
+				android:textStyle="bold"                   
+                android:id="@+id/arrive_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="10dp" />
+
+            <TextView
+				android:textStyle="bold"                   
+                android:id="@+id/charge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="10dp" />
+        </LinearLayout>          
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+				android:textStyle="bold"                
                 android:id="@+id/total_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,12 +72,14 @@
                 android:layout_marginLeft="10dp" />
 
             <TextView
+				android:textStyle="bold"                
                 android:id="@+id/distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:layout_marginLeft="10dp" />
         </LinearLayout>
+        
     </LinearLayout>
 
 </RelativeLayout>

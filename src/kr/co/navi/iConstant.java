@@ -8,12 +8,12 @@ public interface iConstant {
 	/**
 	 * 앱 아이디
 	 */
-	public final static String APP_ID = "8100CFD2";
+	public final static String APP_ID = "8100D3D7";
 
 	/**
 	 * 앱 테스트 키
 	 */
-	public final static String APP_KEY = "T77EDC52D13BB61";
+	public final static String APP_KEY = "TBFE3CDD3119BF";
 	
 	/**
 	 * 경로를 찾을 url

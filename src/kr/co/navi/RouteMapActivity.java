@@ -4,10 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import kr.co.navi.data.VerTexData;
 import kr.co.navi.overlay.CustomItemizedOverlay;
@@ -30,7 +33,12 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Looper;
+import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,7 +56,7 @@ import com.google.android.maps.Projection;
 /**
  * 
  */
-public class NaviMapActivity extends MapActivity implements iConstant {
+public class RouteMapActivity extends MapActivity implements iConstant {
 	private MapView mMapView;
 	private Drawable drawable;
 	private CustomItemizedOverlay<CustomOverlayItem> itemizedOverlay;
@@ -61,6 +69,8 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 	private TextView endPlaceTv;			// 도착 위치	
 	private TextView totalDistanceTv;		// 총 거리
 	private TextView totalTimeTv;			// 예상 시간	
+	private TextView arriveTimeTv;			// 도착예상시간
+	private TextView chargeTv;				// 택시요금
 	
 	// location
 	private GeoPoint startPoint;
@@ -72,6 +82,7 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 	private String totalTime;	
 
 	private String priority;
+
 	@Override
 	protected void onCreate(Bundle icicle) {
 		// TODO Auto-generated method stub
@@ -80,12 +91,14 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 		getIntent();
 		initLayout();
 		
+		/*
 		try {
 			parseBuildingInfoJson();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 	}
 
 	/**
@@ -102,7 +115,9 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 		endPlaceTv = (TextView)findViewById(R.id.end_place);		
 		totalTimeTv = (TextView)findViewById(R.id.total_time);				
 		totalDistanceTv = (TextView)findViewById(R.id.distance);			
-
+		arriveTimeTv = (TextView)findViewById(R.id.arrive_time);
+		chargeTv = (TextView)findViewById(R.id.charge);		
+		
 		mapOverlays = mMapView.getOverlays();
 		// first overlay
 		drawable = getResources().getDrawable(R.drawable.marker);
@@ -324,6 +339,49 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 		}
 	}
 	
+	private boolean isTwoClickBack = false;
+	@Override
+	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+		/*
+		 * back 버튼이면 타이머(2초)를 이용하여 다시한번 뒤로 가기를
+		 * 누르면 어플리케이션이 종료 되도록한다.
+		 */
+		if (event.getAction() == KeyEvent.ACTION_DOWN) {
+			if (keyCode == KeyEvent.KEYCODE_BACK) {
+				if (!isTwoClickBack) {
+					Toast.makeText(this, "'뒤로' 버튼을 한번 더 누르면 종료됩니다.",
+							Toast.LENGTH_SHORT).show();
+					CntTimer timer = new CntTimer(2000, 1);
+					timer.start();
+				} else {
+					moveTaskToBack(true);
+	                finish();
+					return true;
+				}
+
+			}
+		}
+		return false;
+	}
+
+	// 뒤로가기 종료를 위한 타이머
+	class CntTimer extends CountDownTimer {
+		public CntTimer(final long millisInFuture, final long countDownInterval) {
+			super(millisInFuture, countDownInterval);
+			isTwoClickBack = true;
+		}
+
+		@Override
+		public void onFinish() {
+			// TODO Auto-generated method stub
+			isTwoClickBack = false;
+		}
+
+		@Override
+		public void onTick(final long millisUntilFinished) {
+		}
+	}	
+	
 
 	/**
 	 * 경로 받아오기 쓰레드 처리 클래스
@@ -338,7 +396,7 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 				progress.dismiss();
 			}
 
-			if (result) {	// 정상 수신
+			if (result && jsonText != null) {	// 정상 수신
 				parseJson(jsonText.trim());
 				mapOverlays = mMapView.getOverlays();
 				mapOverlays.clear();	// 이전 오버레이는 제거
@@ -352,7 +410,7 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 				endPlaceTv.setText("도착 : " +endAddress.replace("대한민국", " "));
 				// 예상 시간 설정
 				String hour = "";	// 60분 이상일경우 시간으로 변환처리
-				long time = Math.round( Double.valueOf(totalTime)) ;
+				long time = Math.round( Double.valueOf(totalTime) * 1.1) ;
 				if( time >  60){	// 1시간 이상이면 시간으로 변환
 					hour = String.valueOf(time / 60);
 					totalTime = hour +"시간 " + String.valueOf(time % 60) +"분";
@@ -360,15 +418,36 @@ public class NaviMapActivity extends MapActivity implements iConstant {
 					totalTime = time + "분";
 				}
 				totalTimeTv.setText("예상시간 : 약 " +totalTime) ;
-				totalDistanceTv.setText("거리 : 약" + Math.round( Double.valueOf(totalDistance) / 1000) + "Km");
+				totalDistanceTv.setText("거리 : 약" 
+							+ Math.round( Double.valueOf(totalDistance) / 1000) + "Km \n");
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.MINUTE, (int)time);
+				arriveTimeTv.setText("도착시간 : " + cal.get(Calendar.HOUR)+"시 " +cal.get(Calendar.MINUTE)+"분 ");						
+				chargeTv.setText("요금 : 약" + calcTaxiCharge(Integer.valueOf(totalDistance)));			
 				infoBox.setVisibility(View.VISIBLE);	// 주소정보 박스를 보여준다.
 			}
+		}
+		
+		/**
+		 * 택시 요금 계산하기
+		 * @param meter
+		 * @return
+		 */
+		private String calcTaxiCharge(int meter){
+			// 기본요금 거리 이하일때
+			if(meter - 2000 < 0){
+				return  "2,400원";
+			}
+			// 기본 거리 2000m, 144m 마다 100원 	+ 기본요금		
+			int charge = ((meter - 2000) / 144 ) * 100 + 2400;
+			charge *= 1.3;		// 신호시간을 감안하여 약 0.3정도를 추가해준다.
+			return NumberFormat.getCurrencyInstance().format(charge) + "원";
 		}
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			progress = ProgressDialog.show(NaviMapActivity.this, "경로 탐색중",
+			progress = ProgressDialog.show(RouteMapActivity.this, "경로 탐색중",
 					"잠시만 기다려 주세요 경로를 탐색중입니다.");
 		}
 

@@ -61,7 +61,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/txt_input"
-        android:text="여수시"
+        android:text=""
         android:hint="도착 위치를 입력하세요" />
 
     <LinearLayout
@@ -104,7 +104,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@drawable/loc_btn"
-        android:text="우선순위"
+        android:text="계산방법"
         android:layout_margin="10dp"
         android:textColor="#fff"
         android:textSize="18sp" />    
@@ -116,7 +116,7 @@
         android:layout_margin="10dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/search_btn"
-        android:text="경로 검색"
+        android:text="요금계산"
         android:textColor="#fff"
         android:textSize="18sp" />
 

@@ -4,6 +4,7 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry exported="true" kind="lib" path="libs/AndroidUtils.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/workspace/android-mapviewballoons/bin/android-mapviewballoons.jar" sourcepath="/android-mapviewballoons/src"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

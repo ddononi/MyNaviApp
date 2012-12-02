@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">마이네비</string>
+    <string name="app_name">택시미터</string>
     
     <string-array name="pirority_label">
         <item>최단거리</item>
-        <item>고속도록</item>
+        <item>고속도로</item>
         <item>실시간도로</item>
     </string-array>
     

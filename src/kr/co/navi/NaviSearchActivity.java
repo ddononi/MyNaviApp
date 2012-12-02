@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
+import kr.co.utils.BaseActivity;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -45,7 +47,7 @@ import android.widget.Toast;
 /**
  *	네비게이션 출발 및 도착 위치 설정 엑티비티
  */
-public class NaviSearchActivity extends Activity implements iConstant, OnClickListener {
+public class NaviSearchActivity extends BaseActivity implements iConstant, OnClickListener {
 
 	// element
 	private EditText startPlaceEt;				// 출발 장소 입력창
@@ -90,7 +92,7 @@ public class NaviSearchActivity extends Activity implements iConstant, OnClickLi
 	};	
 	
 	@Override
-	protected void onCreate(Bundle icicle) {
+	public void onCreate(Bundle icicle) {
 		// TODO Auto-generated method stub
 		super.onCreate(icicle);
 		setContentView(R.layout.search_layout);

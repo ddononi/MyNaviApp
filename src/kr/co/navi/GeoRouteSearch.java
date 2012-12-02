@@ -34,7 +34,6 @@ public class GeoRouteSearch implements iConstant {
 			URL url = new URL(	SEARCH_URL + getParams());
 			// URL 연결
 			URLConnection conn = url.openConnection();
-			conn.setDoOutput(true);
 			conn.setDoInput(true);
 			// 헤더에 인증 값 셋팅
 			conn.addRequestProperty("authorization", authValue);
